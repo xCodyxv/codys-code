@@ -1,0 +1,35 @@
+Project Overview:
+TinyBot is a conceptualized thought-controlled, hand-sized humanoid robot. This robot will be controlled via a NextMind Brain-Computer Interface (BCI), allowing users to control its movements using their thoughts, or alternatively, using VR controllers for input and motion. The robot will feature two cameras for eyes, enabling users to see through its perspective using a VR headset or simply watch it move around in real life. The control system will be wireless, utilizing WiFi or cellular data to ensure standalone operation.
+
+Technical Details:
+Robot Design and 3D Printing
+Design: Design the robot with key joints and components to allow for fluid motion and a compartment for cameras and electronics.
+CAD Software: Use CAD software like Blender or Fusion 360 for design.
+3D Printing: 3D print parts and assemble them.
+
+Control System:
+BCI: NextMind device to read EEG signals.
+Microcontroller: Raspberry Pi Zero W for processing commands and controlling servos.
+Servos: Small servomotors for the joints.
+Camera Modules: Two small cameras for vision.
+Battery: Portable power source.
+Wireless Communication: WiFi or cellular data for remote control.
+Smooth Animation Interpolation
+State Machine: Define states (e.g., walking, running, jumping) and transitions.
+Transition Graphs: Control the flow of transitions between states.
+Inverse Kinematics (IK): Calculate joint angles for natural motion.
+
+Software Integration:
+Signal Processing: Develop software to handle signal processing, motion planning, and camera streaming.
+Real-Time Feedback: Create real-time feedback loops for balance and adjustments.
+Video Streaming: Stream video to a VR headset using low-latency technologies.
+
+Use Cases:
+1. With VR Headset
+Users can control TinyBot using thought while viewing through the robot's cameras in a VR headset, experiencing the world from its perspective.
+
+2. Without VR Headset
+Users can control TinyBot using thought and watch it move around their living space, performing tasks like walking, running, and interacting with objects.
+
+3. Using VR Controllers
+Users can control TinyBot using VR controllers for input and motion, providing an alternative to the thought-controlled interface.
