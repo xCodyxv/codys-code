@@ -1,0 +1,211 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Routine Assistant</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #222;
+            color: #fff;
+        }
+        #taskList {
+            margin-top: 20px;
+        }
+        .task {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #444;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .delete-btn {
+            background-color: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #stopButton {
+            background-color: #ff4444;
+            color: white;
+        }
+        #stopButton:hover {
+            background-color: #cc0000;
+        }
+        #newReminderForm {
+            margin-top: 20px;
+        }
+        input {
+            margin: 5px 0;
+            padding: 5px;
+            background-color: #333;
+            color: #fff;
+            border: 1px solid #555;
+        }
+    </style>
+</head>
+<body>
+    <h1>Daily Routine Assistant</h1>
+    <div id="currentTime">Current time: 10:24:22 PM</div>
+    <div id="taskList"><h2>Scheduled Tasks:</h2><div class="task">
+                    <span>Wake Up Cody at 04:00</span>
+                    <button class="delete-btn" onclick="deleteTask(0)">X</button>
+                </div><div class="task">
+                    <span>Brush teeth at 08:30</span>
+                    <button class="delete-btn" onclick="deleteTask(1)">X</button>
+                </div><div class="task">
+                    <span>Mom and Pinky need their medicine at 09:00</span>
+                    <button class="delete-btn" onclick="deleteTask(2)">X</button>
+                </div><div class="task">
+                    <span>Time to wake up for the day Cody at 09:00</span>
+                    <button class="delete-btn" onclick="deleteTask(3)">X</button>
+                </div><div class="task">
+                    <span>Work out for the day Cody at 10:00</span>
+                    <button class="delete-btn" onclick="deleteTask(4)">X</button>
+                </div><div class="task">
+                    <span>Take a bath Cody at 11:00</span>
+                    <button class="delete-btn" onclick="deleteTask(5)">X</button>
+                </div><div class="task">
+                    <span>Do laundry Cody for real at 12:00</span>
+                    <button class="delete-btn" onclick="deleteTask(6)">X</button>
+                </div><div class="task">
+                    <span>Cody clean the house at 13:00</span>
+                    <button class="delete-btn" onclick="deleteTask(7)">X</button>
+                </div><div class="task">
+                    <span>Go to sleep Cody at 21:00</span>
+                    <button class="delete-btn" onclick="deleteTask(8)">X</button>
+                </div><div class="task">
+                    <span>Really go to sleep now Cody at 22:00</span>
+                    <button class="delete-btn" onclick="deleteTask(9)">X</button>
+                </div></div>
+    <button id="stopButton" onclick="stopSpeech()">Stop Speech</button>
+
+    <div id="newReminderForm">
+        <h2>Add New Reminder</h2>
+        <input type="text" id="reminderName" placeholder="Reminder Name">
+        <input type="time" id="reminderTime">
+        <button onclick="addReminder()">Add Reminder</button>
+    </div>
+
+    <script>
+        let tasks = [];
+
+        function loadTasks() {
+            const savedTasks = localStorage.getItem('tasks');
+            if (savedTasks) {
+                tasks = JSON.parse(savedTasks);
+            } else {
+                tasks = [
+                    { name: "Wake Up", time: "04:00" },
+                    { name: "Brush teeth", time: "08:30" },
+                    { name: "Work out", time: "10:00" },
+                    { name: "Take a shower", time: "11:00" },
+                    { name: "Do laundry", time: "12:00" },
+                    { name: "Clean the house", time: "13:00" },
+                    { name: "Go to sleep", time: "21:00" }
+                ];
+            }
+            sortTasks();
+            displayTasks();
+        }
+
+        function sortTasks() {
+            tasks.sort((a, b) => {
+                return a.time.localeCompare(b.time);
+            });
+        }
+
+        function saveTasks() {
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+
+        function checkTasks() {
+            const now = new Date();
+            const currentTime = now.toLocaleTimeString();
+            document.getElementById('currentTime').textContent = `Current time: ${currentTime}`;
+
+            tasks.forEach(task => {
+                const [hours, minutes] = task.time.split(':');
+                const taskTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes);
+
+                const timeDiff = now.getTime() - taskTime.getTime();
+                if (timeDiff >= 0 && timeDiff < 60000) { // Within the last minute
+                    speak(`It's time to ${task.name}. The current time is ${currentTime}.`);
+                }
+            });
+        }
+
+        function speak(text) {
+            stopSpeech();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.voice = speechSynthesis.getVoices().find(voice => voice.name.includes('Female'));
+            speechSynthesis.speak(utterance);
+        }
+
+        function stopSpeech() {
+            speechSynthesis.cancel();
+        }
+
+        function displayTasks() {
+            const taskList = document.getElementById('taskList');
+            taskList.innerHTML = '<h2>Scheduled Tasks:</h2>';
+            tasks.forEach((task, index) => {
+                const taskElement = document.createElement('div');
+                taskElement.className = 'task';
+                taskElement.innerHTML = `
+                    <span>${task.name} at ${task.time}</span>
+                    <button class="delete-btn" onclick="deleteTask(${index})">X</button>
+                `;
+                taskList.appendChild(taskElement);
+            });
+        }
+
+        function deleteTask(index) {
+            tasks.splice(index, 1);
+            displayTasks();
+            saveTasks();
+            speak("Reminder deleted");
+        }
+
+        function addReminder() {
+            const name = document.getElementById('reminderName').value;
+            const time = document.getElementById('reminderTime').value;
+            if (name && time) {
+                tasks.push({ name, time });
+                sortTasks();
+                displayTasks();
+                saveTasks();
+                speak(`New reminder added: ${name} at ${time}`);
+                document.getElementById('reminderName').value = '';
+                document.getElementById('reminderTime').value = '';
+            } else {
+                alert('Please enter both a name and time for the reminder.');
+            }
+        }
+
+        // Initialize voices and start the assistant
+        speechSynthesis.onvoiceschanged = () => {
+            loadTasks();
+            speak("Daily Routine Assistant is ready.");
+            setInterval(checkTasks, 10000); // Check tasks every 10 seconds
+        };
+    </script>
+</body></html>
