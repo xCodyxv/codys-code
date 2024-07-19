@@ -1,4 +1,12 @@
+# This is made to work in google colab
 
+# pip install
+!pip install Flask pyngrok
+
+# Set your ngrok authtoken (replace 'YOUR_NGROK_AUTH_TOKEN' with your actual token)
+!ngrok authtoken YOUR_NGROK_AUTH_TOKEN
+
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Amara means guiding light
 
